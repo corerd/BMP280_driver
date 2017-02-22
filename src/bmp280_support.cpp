@@ -474,6 +474,9 @@ s8  BMP280_SPI_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 void  BMP280_delay_msek(u32 msek)
 {
 	/*Here you can write your own delay routine*/
+#ifdef ARDUINO
+    delay(msek);
+#endif
 }
 #endif
 
