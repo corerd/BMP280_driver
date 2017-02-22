@@ -52,7 +52,13 @@
 /*---------------------------------------------------------------------------*/
 /* Includes*/
 /*---------------------------------------------------------------------------*/
+#ifdef ARDUINO
+#include "Arduino.h"
+#endif
+
+extern "C" {
 #include "bmp280.h"
+}
 
 #define BMP280_API
 /*Enable the macro BMP280_API to use this support file */
@@ -455,3 +461,18 @@ void  BMP280_delay_msek(u32 msek)
 	/*Here you can write your own delay routine*/
 }
 #endif
+
+
+#ifdef ARDUINO
+
+void setup()
+{
+
+}
+
+void loop()
+{
+
+}
+
+#endif  // ARDUINO

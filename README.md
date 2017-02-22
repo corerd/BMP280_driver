@@ -1,3 +1,14 @@
+Corerd Contribution Disclaimer
+==============================
+This package is a fork of the official
+[Bosch Sensortec](https://github.com/BoschSensortec/BMP280_driver) repository.
+
+Bosch Sensortec provides it on an "as is" basis
+and the user assumes responsibility for its use.
+
+Any reference to the name of the copyright holder or the names of the contributors
+does not constitute or imply their endorsement.
+
 
 CONTENTS OF THIS FILE
 =======================
@@ -57,5 +68,3 @@ SUPPORTED SENSOR INTERFACE
 COPYRIGHT
 ===========
 	- Copyright (C) 2012 - 2016 Bosch Sensortec GmbH
-
-
