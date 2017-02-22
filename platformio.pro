@@ -9,9 +9,12 @@ INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/
 INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/tools/sdk/lwip/include"
 INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/cores/esp8266"
 INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/variants/d1_mini"
+INCLUDEPATH += "$${HOMEDIR}/Devel/PlatformIO/BMP280_driver/.piolibdeps/I2Cdevlib-Core_ID11"
 INCLUDEPATH += "$${HOMEDIR}/Devel/PlatformIO/BMP280_driver/lib/bmp280/src"
 INCLUDEPATH += "$${HOMEDIR}/Devel/PlatformIO/BMP280_driver/src"
 INCLUDEPATH += "$${HOMEDIR}/Devel/PlatformIO/BMP280_driver/lib/bmp280/src"
+INCLUDEPATH += "$${HOMEDIR}/Devel/PlatformIO/BMP280_driver/.piolibdeps/I2Cdevlib-Core_ID11"
+INCLUDEPATH += "$${HOMEDIR}/Devel/PlatformIO/BMP280_driver/.piolibdeps/I2Cdevlib-Core_ID11"
 INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/ArduinoOTA"
 INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/DNSServer/src"
 INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/EEPROM"
@@ -51,9 +54,8 @@ DEFINES += "ESP8266_WEMOS_D1MINI"
 
 OTHER_FILES += platformio.ini
 
-SOURCES += \
-    lib/bmp280/src/bmp280.c \
-    src/bmp280_support.cpp
+SOURCES += src/bmp280_support.cpp \
+    lib/bmp280/src/bmp280.c
 
 HEADERS += \
     lib/bmp280/src/bmp280.h

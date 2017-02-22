@@ -54,6 +54,7 @@
 /*---------------------------------------------------------------------------*/
 #ifdef ARDUINO
 #include "Arduino.h"
+#include "I2Cdev.h"
 #endif
 
 extern "C" {
@@ -329,13 +330,19 @@ s8 SPI_routine(void) {
 s8  BMP280_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 {
 	s32 iError = BMP280_INIT_VALUE;
-	u8 array[I2C_BUFFER_LEN];
-	u8 stringpos = BMP280_INIT_VALUE;
+#ifdef ARDUINO
+    if ( !I2Cdev::writeBytes(dev_addr, reg_addr, cnt, reg_data) )
+    {
+        iError = -1;
+    }
+#else
+    u8 array[I2C_BUFFER_LEN];
+    u8 stringpos = BMP280_INIT_VALUE;
 	array[BMP280_INIT_VALUE] = reg_addr;
 	for (stringpos = BMP280_INIT_VALUE; stringpos < cnt; stringpos++) {
 		array[stringpos + BMP280_DATA_INDEX] = *(reg_data + stringpos);
 	}
-	/*
+    /*
 	* Please take the below function as your reference for
 	* write the data using I2C communication
 	* "IERROR = I2C_WRITE_STRING(DEV_ADDR, ARRAY, CNT+1)"
@@ -350,7 +357,8 @@ s8  BMP280_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 	* have to be initiated.Thus cnt+1 operation done in the I2C write string function
 	* For more information please refer data sheet SPI communication:
 	*/
-	return (s8)iError;
+#endif
+    return (s8)iError;
 }
 
  /*	\Brief: The function is used as I2C bus read
@@ -363,7 +371,13 @@ s8  BMP280_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 s8  BMP280_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 {
 	s32 iError = BMP280_INIT_VALUE;
-	u8 array[I2C_BUFFER_LEN] = {BMP280_INIT_VALUE};
+#ifdef ARDUINO
+    if (I2Cdev::readBytes(dev_addr, reg_addr, cnt, reg_data, 0) != cnt)
+    {
+        iError = -1;
+    }
+#else
+    u8 array[I2C_BUFFER_LEN] = {BMP280_INIT_VALUE};
 	u8 stringpos = BMP280_INIT_VALUE;
 	array[BMP280_INIT_VALUE] = reg_addr;
 	/* Please take the below function as your reference
@@ -378,7 +392,8 @@ s8  BMP280_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 	for (stringpos = BMP280_INIT_VALUE; stringpos < cnt; stringpos++) {
 		*(reg_data + stringpos) = array[stringpos];
 	}
-	return (s8)iError;
+#endif
+    return (s8)iError;
 }
 
 /*	\Brief: The function is used as SPI bus read
