@@ -278,7 +278,7 @@ s8 I2C_routine(void) {
  *--------------------------------------------------------------------------*/
 	bmp280.bus_write = BMP280_I2C_bus_write;
 	bmp280.bus_read = BMP280_I2C_bus_read;
-	bmp280.dev_addr = BMP280_I2C_ADDRESS2;
+    bmp280.dev_addr = BMP280_I2C_ADDRESS1;
 	bmp280.delay_msec = BMP280_delay_msek;
 
 	return BMP280_INIT_VALUE;
@@ -331,9 +331,9 @@ s8  BMP280_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 {
 	s32 iError = BMP280_INIT_VALUE;
 #ifdef ARDUINO
-    if ( !I2Cdev::writeBytes(dev_addr, reg_addr, cnt, reg_data) )
+    if ( ! I2Cdev::writeBytes(dev_addr, reg_addr, cnt, reg_data) )
     {
-        iError = -1;
+        iError = ERROR;
     }
 #else
     u8 array[I2C_BUFFER_LEN];
@@ -374,7 +374,7 @@ s8  BMP280_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 #ifdef ARDUINO
     if (I2Cdev::readBytes(dev_addr, reg_addr, cnt, reg_data, 0) != cnt)
     {
-        iError = -1;
+        iError = ERROR;
     }
 #else
     u8 array[I2C_BUFFER_LEN] = {BMP280_INIT_VALUE};
