@@ -307,7 +307,7 @@ s8 SPI_routine(void) {
 
 #define	I2C_BUFFER_LEN 8
 #define SPI_BUFFER_LEN 5
-#define BUFFER_LENGTH	0xFF
+#define BUFFER_FILL_VALUE	0xFF
 #define	SPI_READ	0x80
 #define SPI_WRITE	0x7F
 #define BMP280_DATA_INDEX	1
@@ -406,7 +406,7 @@ s8  BMP280_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 s8  BMP280_SPI_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 {
 	s32 iError=BMP280_INIT_VALUE;
-	u8 array[SPI_BUFFER_LEN]={BUFFER_LENGTH};
+    u8 array[SPI_BUFFER_LEN]={BUFFER_FILL_VALUE};
 	u8 stringpos;
 	/*	For the SPI mode only 7 bits of register addresses are used.
 	The MSB of register address denotes the type of SPI data transfer, whether
