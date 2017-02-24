@@ -108,15 +108,41 @@ s8 I2C_routine(void);
 s8 SPI_routine(void);
 #endif
 /********************End of I2C/SPI function declarations***********************/
+/*!
+ * @brief This structure holds sensor data
+ */
+struct sensor_data_t {
+    u8 v_standby_time_u8;
+
+    /* The variables used in individual data read APIs*/
+    /* The variable used to read uncompensated temperature*/
+    s32 v_data_uncomp_tem_s32;
+    /* The variable used to read uncompensated pressure*/
+    s32 v_data_uncomp_pres_s32;
+    /* The variable used to read real temperature*/
+    s32 v_actual_temp_s32;
+    /* The variable used to read real pressure*/
+    u32 v_actual_press_u32;
+
+    /* The variables used in combined data read APIs*/
+    /* The variable used to read uncompensated temperature*/
+    s32 v_data_uncomp_tem_combined_s32;
+    /* The variable used to read uncompensated pressure*/
+    s32 v_data_uncomp_pres_combined_s32;
+    /* The variable used to read real temperature*/
+    s32 v_actual_temp_combined_s32;
+    /* The variable used to read real pressure*/
+    u32 v_actual_press_combined_u32;
+};
 /*	Brief : The delay routine
  *	\param : delay in ms
 */
 void BMP280_delay_msek(u32 msek);
 /* This function is an example for reading sensor data
- *	\param: None
+ *	\param: sensor data structure pointer
  *	\return: communication result
  */
-s32 bmp280_data_readout_template(void);
+s32 bmp280_data_readout_template(sensor_data_t *sd);
 /*----------------------------------------------------------------------------*
  *  struct bmp280_t parameters can be accessed by using bmp280
  *	bmp280_t having the following parameters
@@ -128,33 +154,33 @@ s32 bmp280_data_readout_template(void);
  *---------------------------------------------------------------------------*/
 struct bmp280_t bmp280;
 /* This function is an example for reading sensor data
- *	\param: None
+ *	\param: sensor data structure pointer
  *	\return: communication result
  */
-s32 bmp280_data_readout_template(void)
+s32 bmp280_data_readout_template(sensor_data_t *sd)
 {
 	/* The variable used to assign the standby time*/
-	u8 v_standby_time_u8 = BMP280_INIT_VALUE;
+    sd->v_standby_time_u8 = BMP280_INIT_VALUE;
 
 	/* The variables used in individual data read APIs*/
 	/* The variable used to read uncompensated temperature*/
-	s32 v_data_uncomp_tem_s32 = BMP280_INIT_VALUE;
+    sd->v_data_uncomp_tem_s32 = BMP280_INIT_VALUE;
 	/* The variable used to read uncompensated pressure*/
-	s32 v_data_uncomp_pres_s32 = BMP280_INIT_VALUE;
+    sd->v_data_uncomp_pres_s32 = BMP280_INIT_VALUE;
 	/* The variable used to read real temperature*/
-	s32 v_actual_temp_s32 = BMP280_INIT_VALUE;
+    sd->v_actual_temp_s32 = BMP280_INIT_VALUE;
 	/* The variable used to read real pressure*/
-	u32 v_actual_press_u32 = BMP280_INIT_VALUE;
+    sd->v_actual_press_u32 = BMP280_INIT_VALUE;
 
 	/* The variables used in combined data read APIs*/
 	/* The variable used to read uncompensated temperature*/
-	s32 v_data_uncomp_tem_combined_s32 = BMP280_INIT_VALUE;
+    sd->v_data_uncomp_tem_combined_s32 = BMP280_INIT_VALUE;
 	/* The variable used to read uncompensated pressure*/
-	s32 v_data_uncomp_pres_combined_s32 = BMP280_INIT_VALUE;
+    sd->v_data_uncomp_pres_combined_s32 = BMP280_INIT_VALUE;
 	/* The variable used to read real temperature*/
-	s32 v_actual_temp_combined_s32 = BMP280_INIT_VALUE;
+    sd->v_actual_temp_combined_s32 = BMP280_INIT_VALUE;
 	/* The variable used to read real pressure*/
-	u32 v_actual_press_combined_u32 = BMP280_INIT_VALUE;
+    sd->v_actual_press_combined_u32 = BMP280_INIT_VALUE;
 
 	/* result of communication results*/
 	s32 com_rslt = ERROR;
@@ -209,7 +235,7 @@ s32 bmp280_data_readout_template(void)
 	com_rslt += bmp280_set_standby_durn(BMP280_STANDBY_TIME_1_MS);
 
 	/* This API used to read back the written value of standby time*/
-	com_rslt += bmp280_get_standby_durn(&v_standby_time_u8);
+    com_rslt += bmp280_get_standby_durn(&sd->v_standby_time_u8);
 /*-----------------------------------------------------------------*
 ************************* END GET and SET FUNCTIONS ****************
 *------------------------------------------------------------------*/
@@ -220,18 +246,18 @@ s32 bmp280_data_readout_template(void)
 ****** INDIVIDUAL APIs TO READ UNCOMPENSATED PRESSURE AND TEMPERATURE*******
 *---------------------------------------------------------------------*/
 	/* API is used to read the uncompensated temperature*/
-	com_rslt += bmp280_read_uncomp_temperature(&v_data_uncomp_tem_s32);
+    com_rslt += bmp280_read_uncomp_temperature(&sd->v_data_uncomp_tem_s32);
 
 	/* API is used to read the uncompensated pressure*/
-	com_rslt += bmp280_read_uncomp_pressure(&v_data_uncomp_pres_s32);
+    com_rslt += bmp280_read_uncomp_pressure(&sd->v_data_uncomp_pres_s32);
 
 	/* API is used to read the true temperature*/
 	/* Input value as uncompensated temperature*/
-	v_actual_temp_s32 = bmp280_compensate_temperature_int32(v_data_uncomp_tem_s32);
+    sd->v_actual_temp_s32 = bmp280_compensate_temperature_int32(sd->v_data_uncomp_tem_s32);
 
 	/* API is used to read the true pressure*/
 	/* Input value as uncompensated pressure*/
-	v_actual_press_u32 = bmp280_compensate_pressure_int32(v_data_uncomp_pres_s32);
+    sd->v_actual_press_u32 = bmp280_compensate_pressure_int32(sd->v_data_uncomp_pres_s32);
 
 /*------------------------------------------------------------------*
 ******* STAND-ALONE APIs TO READ COMBINED TRUE PRESSURE AND TEMPERATURE********
@@ -239,12 +265,12 @@ s32 bmp280_data_readout_template(void)
 
 
 	/* API is used to read the uncompensated temperature and pressure*/
-	com_rslt += bmp280_read_uncomp_pressure_temperature(&v_data_uncomp_pres_combined_s32,
-	&v_data_uncomp_tem_combined_s32);
+    com_rslt += bmp280_read_uncomp_pressure_temperature(&sd->v_data_uncomp_pres_combined_s32,
+    &sd->v_data_uncomp_tem_combined_s32);
 
 	/* API is used to read the true temperature and pressure*/
-	com_rslt += bmp280_read_pressure_temperature(&v_actual_press_combined_u32,
-	&v_actual_temp_combined_s32);
+    com_rslt += bmp280_read_pressure_temperature(&sd->v_actual_press_combined_u32,
+    &sd->v_actual_temp_combined_s32);
 
 
 
@@ -483,14 +509,68 @@ void  BMP280_delay_msek(u32 msek)
 
 #ifdef ARDUINO
 
+struct sensor_data_t sensor;
+s32 comm_result;
+const char *chip_id_str = "";
+
 void setup()
 {
+    Wire.begin();
+    Serial.begin(115200);
 
+    // Read sensor data
+    comm_result = bmp280_data_readout_template(&sensor);
+    if (comm_result == BMP280_INIT_VALUE)
+    {
+        switch(bmp280.chip_id)
+        {
+        case BMP280_CHIP_ID1:
+            chip_id_str = "BMP280_CHIP_ID1";
+            break;
+        case BMP280_CHIP_ID2:
+            chip_id_str = "BMP280_CHIP_ID2";
+            break;
+        case BMP280_CHIP_ID3:
+            chip_id_str = "BMP280_CHIP_ID3";
+            break;
+        default:
+            chip_id_str = "<unknown>";
+        }
+    }
 }
 
 void loop()
 {
+    if (comm_result == BMP280_INIT_VALUE)
+    {
+        Serial.println("BMP280 configuration PASS");
 
+        // Display BMP280 initialization parameters
+        Serial.printf("Chip ID: %s(0x%02X)\n", chip_id_str, bmp280.chip_id);
+        Serial.printf("Temperature over sampling: %d\n", bmp280.oversamp_temperature);
+        Serial.printf("Pressure over sampling: %d\n", bmp280.oversamp_pressure);
+        Serial.println();
+
+        Serial.println("Variables used in individual data read APIs");
+        Serial.printf("Uncompensated temperature: %d\n", sensor.v_data_uncomp_tem_s32);
+        Serial.printf("Uncompensated pressure: %d\n", sensor.v_data_uncomp_pres_s32);
+        Serial.printf("Real temperature: %d\n", sensor.v_actual_temp_s32);
+        Serial.printf("Real pressure: %u\n", sensor.v_actual_press_u32);
+        Serial.println();
+
+        Serial.println("Variables used in combined data read APIs");
+        Serial.printf("Uncompensated temperature: %d\n", sensor.v_data_uncomp_tem_combined_s32);
+        Serial.printf("Uncompensated pressure: %d\n", sensor.v_data_uncomp_pres_combined_s32);
+        Serial.printf("Real temperature: %d\n", sensor.v_actual_temp_combined_s32);
+        Serial.printf("Real pressure: %u\n", sensor.v_actual_press_combined_u32);
+        Serial.println();
+    }
+    else
+    {
+        Serial.printf("BMP280 configuration FAIL\nResult: %d\n", comm_result);
+    }
+    Serial.println();
+    delay(5000);
 }
 
 #endif  // ARDUINO
